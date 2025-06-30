@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  # -------------------------
+  # 1) Database
+  # ------------------------- 
+  postgres:
+    image: postgres:16
+    container_name: court_db_dev
+    restart: always
+    environment:
+      POSTGRES_USER: jonah
+      POSTGRES_PASSWORD: jonah
+      POSTGRES_DB: courtdb_dev
+    ports:
+      - "65432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jonah -d courtdb_dev"]
+      interval: 5s
+      retries: 10
+
+  # -------------------------
+  # 2) Spring Backend
+  # -------------------------
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/courtdb_dev
+      SPRING_DATASOURCE_USERNAME: jonah
+      SPRING_DATASOURCE_PASSWORD: jonah
+    ports:
+      - "8080:8080"
+
+  # -------------------------
+  # 3) Python court scraper
+  # ------------------------
+  scraper:
+    build:
+      context: ./court_scraper
+      dockerfile: Dockerfile
+    env_file:
+      - ./court_scraper/.env
+    working_dir: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./court_scraper:/app
+
+
+volumes:
+  pgdata:
+

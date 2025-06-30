@@ -1,0 +1,16 @@
+Type        | Purpose
+------------|-------------------------------
+feat        | Add new feature
+fix         | Fix a bug
+chore       | Misc tasks (e.g., deps, build)
+docs        | Documentation updates
+style       | Code style (e.g., formatting)
+refactor    | Code changes without features/fixes
+test        | Add/modify tests
+perf        | Performance improvements
+build       | Build system or dependencies
+ci          | CI/CD config changes
+revert      | Revert a previous commit
+hotfix      | Quick critical bug fix
+env         | Environment config changes
+security    | Security improvements/fixes
