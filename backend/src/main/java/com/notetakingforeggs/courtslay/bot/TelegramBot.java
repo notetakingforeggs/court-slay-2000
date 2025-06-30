@@ -70,7 +70,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             } else {
                 String helpText = """ 
-                        Welcome to the advice service Telegram Bot!
+                        Welcome to the court slay 2000 Telegram Bot!
                         
                         to sign up for alerts based on claimaint, type /claimaint: followed by the name or names of the claimant you wish to be alerted for, eg "/claimaint: joe blogs". To sign up for alerts based on names of defendants send a message like "/defendant: persons unknown". 
                         To check your current alerts type "/view".
