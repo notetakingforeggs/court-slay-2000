@@ -1,8 +1,8 @@
-FROM eclipse-temurin:21-alpine AS runtime
+FROM eclipse-temurin:17-jdk AS runtime
 
 # metadate
 LABEL maintainer="notetakingforeggs@gmail.com"
-LABEL org.opencontainers.image.source="https://github.com/notetakingforeggs/whitechapel_advice"
+LABEL org.opencontainers.image.source="https://github.com/notetakingforeggs/court-serve-2000"
 
 # copy JAR into the image
 ARG JAR_FILE=target/*.jar
