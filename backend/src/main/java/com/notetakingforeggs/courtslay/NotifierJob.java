@@ -44,26 +44,27 @@ public class NotifierJob {
 
             // getting all claimants/defendants that are returned with alert search terms
             // TODO need to create methods for finding cases created after a certain date and feed this in here
+            log.debug("last notified{}", s.getLastNotifiedTimestamp());
+
             for (String claimant : s.getAlertTermsClaimant()){
-                log.info("Alert Terms for Claimant");
-                log.info(claimant);
-                log.info("last notified" + s.getLastNotifiedTimestamp());
+                log.debug("Alert Terms for Claimant");
+                log.debug(claimant);
                 claimantHits.addAll(cases.findByClaimantContainingIgnoreCaseAndCreatedAtAfter(claimant, s.getLastNotifiedTimestamp()));
             }for (String defendant : s.getAlertTermsDefendant()){
-                log.info("Alert terms for Defendant");
-                log.info(defendant);
-                log.info("last notified" + s.getLastNotifiedTimestamp());
+                log.debug("Alert terms for Defendant");
+                log.debug(defendant);
                 defendantHits.addAll(cases.findByDefendantContainingIgnoreCaseAndCreatedAtAfter(defendant, s.getLastNotifiedTimestamp()));
             }
 
             if(!claimantHits.isEmpty() || !defendantHits.isEmpty()){
-                log.info("not empty condish");
+                log.debug("not empty condish");
+                log.info("sending message to user");
                 bot.sendMessage(s.getChatId().toString(),format(claimantHits, defendantHits));
                 s.setLastNotifiedTimestamp(Instant.now().getEpochSecond());
                 subs.save(s);
-                log.info("timestamp of last notification" + s.getLastNotifiedTimestamp());
+                log.debug("timestamp of last notification{}", s.getLastNotifiedTimestamp());
             }else{
-                log.info("empteeeeeeeeeeeeeee");
+                log.debug("empteeeeeeeeeeeeeee");
                 //TODO i think the issue is in the last notified time or smth?
             }
         }
@@ -82,7 +83,7 @@ public class NotifierJob {
             sb.append("Hits for your defendants subscriptions: \n\n");
 
             for(CourtCase c : defendantHits){
-                log.info("Start time: " + epochSecondsToString(c.getStartTimeEpoch()));
+                log.debug("Start time: {}", epochSecondsToString(c.getStartTimeEpoch()));
 
                 sb.append("• Start-time: ").append(epochSecondsToString(c.getStartTimeEpoch()))
                                     .append("\n")
