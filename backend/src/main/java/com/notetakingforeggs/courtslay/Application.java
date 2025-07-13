@@ -7,14 +7,18 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 	@SpringBootApplication
 	@EnableScheduling
 	public class Application {
 
+		private static final Logger log = LoggerFactory.getLogger(Application.class);
 		public static void main(String[] args) {
 			var context = SpringApplication.run(Application.class, args);
-
+			log.info("main running");
 			try{
 				TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 				botsApi.registerBot(context.getBean(TelegramBot.class));

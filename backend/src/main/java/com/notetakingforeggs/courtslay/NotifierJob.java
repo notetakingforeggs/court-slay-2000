@@ -7,6 +7,8 @@ import com.notetakingforeggs.courtslay.repository.CourtCaseRepository;
 import com.notetakingforeggs.courtslay.repository.SubscriptionRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +24,19 @@ public class NotifierJob {
     private final CourtCaseRepository cases;
     private final SubscriptionRepository subs;
     private final TelegramBot bot;
+    private static final Logger log = LoggerFactory.getLogger(NotifierJob.class);
 
 
     @PostConstruct
     public void init() {
-        System.out.println("NotifierJob initialized");
+        log.info("NotifierJob initialized");
     }
         //  run at 730 every morning
         @Scheduled(cron =  "0 30 7 * * *")
 //    @Scheduled(cron =  "0 * * * * *")
 //    @Scheduled(fixedRate = 50000) // every 10 seconds
     public void run(){
-        System.out.println("Scheduler running");
+        log.info("Scheduler running: checking suscriptions");
         // iterating thru all subscriptions
         for (Subscription s : subs.findAll()){
             List<CourtCase> claimantHits = new ArrayList<>();
@@ -41,37 +44,37 @@ public class NotifierJob {
 
             // getting all claimants/defendants that are returned with alert search terms
             // TODO need to create methods for finding cases created after a certain date and feed this in here
-            for (String claimaint : s.getAlertTermsClaimant()){
-                System.out.println("Alert Terms for Claimaint");
-                System.out.println(claimaint);
-                System.out.println("last notified" + s.getLastNotifiedTimestamp());
-                claimantHits.addAll(cases.findByClaimantContainingIgnoreCaseAndCreatedAtAfter(claimaint, s.getLastNotifiedTimestamp()));
+            for (String claimant : s.getAlertTermsClaimant()){
+                log.info("Alert Terms for Claimant");
+                log.info(claimant);
+                log.info("last notified" + s.getLastNotifiedTimestamp());
+                claimantHits.addAll(cases.findByClaimantContainingIgnoreCaseAndCreatedAtAfter(claimant, s.getLastNotifiedTimestamp()));
             }for (String defendant : s.getAlertTermsDefendant()){
-                System.out.println("Alert terms for defendant");
-                System.out.println(defendant);
-                System.out.println("last notified" + s.getLastNotifiedTimestamp());
+                log.info("Alert terms for Defendant");
+                log.info(defendant);
+                log.info("last notified" + s.getLastNotifiedTimestamp());
                 defendantHits.addAll(cases.findByDefendantContainingIgnoreCaseAndCreatedAtAfter(defendant, s.getLastNotifiedTimestamp()));
             }
 
             if(!claimantHits.isEmpty() || !defendantHits.isEmpty()){
-                System.out.println("not empty condish");
+                log.info("not empty condish");
                 bot.sendMessage(s.getChatId().toString(),format(claimantHits, defendantHits));
                 s.setLastNotifiedTimestamp(Instant.now().getEpochSecond());
                 subs.save(s);
-                System.out.println("timestamp of last notification" + s.getLastNotifiedTimestamp());
+                log.info("timestamp of last notification" + s.getLastNotifiedTimestamp());
             }else{
-                System.out.println("empteeeeeeeeeeeeeee");
+                log.info("empteeeeeeeeeeeeeee");
                 //TODO i think the issue is in the last notified time or smth?
             }
         }
     }
 
-    public String format(List<CourtCase> claimaintHits, List<CourtCase> defendantHits){
+    public String format(List<CourtCase> claimantHits, List<CourtCase> defendantHits){
         StringBuilder sb = new StringBuilder("»» New Hits for your subscribed alerts «« \n\n");
 
-        if(!claimaintHits.isEmpty()){
-            sb.append("Hits for your claimaint subscriptions: \n\n");
-            claimaintHits.forEach(c -> sb.append("• Start-time: ").append(epochSecondsToString(c.getStartTimeEpoch()))
+        if(!claimantHits.isEmpty()){
+            sb.append("Hits for your claimant subscriptions: \n\n");
+            claimantHits.forEach(c -> sb.append("• Start-time: ").append(epochSecondsToString(c.getStartTimeEpoch()))
                     .append("\n")
                     .append("• Details: ").append(c.getCaseDetails())
                     .append("\n\n"));
@@ -79,7 +82,7 @@ public class NotifierJob {
             sb.append("Hits for your defendants subscriptions: \n\n");
 
             for(CourtCase c : defendantHits){
-                System.out.println("Start time: " + epochSecondsToString(c.getStartTimeEpoch()));
+                log.info("Start time: " + epochSecondsToString(c.getStartTimeEpoch()));
 
                 sb.append("• Start-time: ").append(epochSecondsToString(c.getStartTimeEpoch()))
                                     .append("\n")
