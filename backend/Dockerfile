@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk AS runtime
+FROM eclipse-temurin:21-jdk 
 
 # metadate
 LABEL maintainer="notetakingforeggs@gmail.com"
