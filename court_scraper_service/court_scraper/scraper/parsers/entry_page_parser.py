@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as bs
 import logging
 
-log = logging.GetLogger(__name__)
+log = logging.getLogger(__name__)
 class EntryPageParser:
     def __init__(self, html):
         self.html = html

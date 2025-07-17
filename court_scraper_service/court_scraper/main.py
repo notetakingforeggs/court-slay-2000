@@ -2,12 +2,20 @@ from court_scraper.scraper.session import login
 from court_scraper.scraper.fetch import get_court_links_and_dates
 from court_scraper.scraper.court_scraper import CourtScraper
 from court_scraper.db.db_methods import get_connection
-
+import logging
 
 def main():
 
+    # init logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | scraper | %(message)s"
+    )
 
+    log = logging.getLogger(__name__)
+    log.info("Starting Scraper")
 
+    
     # getting court links doesnt need session as no log in... but it does want you to log in to view the deetts..
     links_and_dates = get_court_links_and_dates()
 

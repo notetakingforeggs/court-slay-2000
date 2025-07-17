@@ -85,7 +85,7 @@ def insert_court_case(court_case:CourtCase, court_id):
                 )
         
     except psycopg2.IntegrityError as e:
-        log.warning(f"case already exists?: {court_case}\n {e.with_traceback}")
+        log.debug(f"case already exists?: {court_case}\n {e.with_traceback}")
         pass
 
     finally:

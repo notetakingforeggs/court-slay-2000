@@ -116,6 +116,7 @@ class Flavour1CourtCaseFactory:
                             court_cases.append(court_case)
                     
                 except (IndexError, ValueError)  as e:
-                    log.warning(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
+                    log.warning("Unpacking issue for flavour 2 - check debug log")
+                    log.debug(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
             return court_cases
             

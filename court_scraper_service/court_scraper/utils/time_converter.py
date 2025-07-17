@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
 import re
 from typing import Optional
+import logging
+
+log = logging.getLogger(__name__)
 
 def normalise_start_time(start_time: str) -> str:
      
@@ -45,7 +48,7 @@ def convert_to_unix_timestamp(time_str:str, date:str) -> int:
 
 def parse_duration(duration_span_raw: Optional[str]) -> Optional[int]:
     if not duration_span_raw:
-        print("parse duration: no duration span?")
+        log.debug("parse duration: no duration span?")
         return None
     
     # Normalising input
@@ -78,7 +81,7 @@ def calculate_duration(start_and_end_times:str) -> tuple[str, int]:
 
     parts = re.split(r"\s*to\s*", start_and_end_times, flags=re.IGNORECASE)
     if len(parts) != 2:
-        print("splitting start time/ end time produced unexpected output")
+        log.warning("splitting start time/ end time produced unexpected output")
         return None 
     
     start_time = re.sub(r'(?i)(am|pm)$', r' \1', parts[0])
@@ -93,6 +96,6 @@ def calculate_duration(start_and_end_times:str) -> tuple[str, int]:
         minutes = int(delta.total_seconds()) // 60
         return (start_time, minutes)
     except ValueError as e:
-        print(f"value error! {e}")
+        log.error(f"value error! {e}")
 
  

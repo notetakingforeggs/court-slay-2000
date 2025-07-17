@@ -1,7 +1,9 @@
 from court_scraper.db.models import CourtCase
 from court_scraper.utils.time_converter import normalise_start_time
 import re
+import logging
 
+log = logging.getLogger(__name__)
 #TODO this is just copied from 1, needs complete overhaul i reckon
 class Flavour2CourtCaseFactory:
 
@@ -25,7 +27,7 @@ class Flavour2CourtCaseFactory:
                     elif len(row) == 4:
                          start_time, _, case_id, case_details, duration, _, _ = row
                     else:
-                        print(f"unexpected row size, skipping this one {row}")
+                        log.debug(f"unexpected row size, skipping this one {row}")
                         continue
                 
   
@@ -92,6 +94,7 @@ class Flavour2CourtCaseFactory:
                             court_cases.append(court_case)
                     
                 except (IndexError, ValueError)  as e:
-                    print(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
+                    log.warning("Unpacking issue for flavour 2 - check debug log for specifics")
+                    log.debug(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
             return court_cases
             

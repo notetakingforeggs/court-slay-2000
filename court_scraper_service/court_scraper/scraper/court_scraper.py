@@ -6,7 +6,7 @@ from court_scraper.scraper.session import BASE_URL
 from court_scraper.scraper.flavours import flavours
 import logging
 
-log = logging.GetLogger(__name__)
+log = logging.getLogger(__name__)
 
 CASE_LIST_BASE_URL = "https://www.courtserve.net/courtlists/viewcourtlistv2.php"
 
@@ -67,17 +67,18 @@ class CourtScraper:
             # check list not null, and that each city has a corresponding id in the db (second check could be phased out later maybe?)
             if not court_cases:
 
-                log.debug(f"failure to get court cases for: {self.city}")
+                log.warning(f"failure to get court cases for: {self.city}")
                 continue
             for case in court_cases: # iterate through scraped court cases and add to db
                 court_id = get_court_id_by_city(case.city)
 
                 if not court_id and case.city:
-                    print(f"no court id for {case.city}")
+                    log.warning(f"no court id for {case.city}")
                     continue 
 
                 # insert court case into db
                 insert_court_case(case, court_id)
-            print(f"{self.city} has {len(court_cases)} court cases")
+                
+            log.info(f"{self.city} has {len(court_cases)} court cases")
 
      
