@@ -23,7 +23,7 @@ class Flavour1CourtCaseFactory:
                 # TODO for chelmsford, issue with only one empty td at the start so trying to parse duration from courtcase ID.
 
                 try:
-                    log.debug(f"flav1 ccf\n row: {repr(row)}")
+                    # log.debug(f"flav1 ccf\n row: {repr(row)}") uncomment if you wanna see the rows?
                     if len(row)>8:
                         try:
                             start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span = row[2:7]
