@@ -1,5 +1,8 @@
 from court_scraper.scraper.parsers.base import BaseDailyCauseListParser
 import re
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Flavour1DailyCauseListParser(BaseDailyCauseListParser):     
@@ -32,5 +35,5 @@ class Flavour1DailyCauseListParser(BaseDailyCauseListParser):
                 row_texts_messy.append(texts)
                 case_count += 1 
           
-        print(f"{self.city}: has the following no of rows selected for (pre-cases): {case_count}")
+        log.debug(f"{self.city}: has the following no of rows selected for (pre-cases): {case_count}")
         return row_texts_messy

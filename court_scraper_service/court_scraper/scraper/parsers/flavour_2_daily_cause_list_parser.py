@@ -1,6 +1,9 @@
 from court_scraper.utils import time_converter
 from court_scraper.scraper.parsers.base import BaseDailyCauseListParser
 import re
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Flavour2DailyCauseListParser(BaseDailyCauseListParser):     
@@ -44,5 +47,5 @@ class Flavour2DailyCauseListParser(BaseDailyCauseListParser):
                 texts.insert(1,duration)
                 row_texts_messy.append(texts)            
                 continue
-        print(f"{self.city}: has the following no of rows selected for (pre-cases): {case_count} - printing from flavour 2 dclp")
+        log.debug(f"{self.city}: has the following no of rows selected for (pre-cases): {case_count} - printing from flavour 2 dclp")
         return row_texts_messy

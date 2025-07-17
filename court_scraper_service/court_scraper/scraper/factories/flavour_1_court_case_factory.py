@@ -1,6 +1,9 @@
 from court_scraper.db.models import CourtCase
 from court_scraper.utils.time_converter import parse_duration, normalise_start_time
 import re
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Flavour1CourtCaseFactory:
@@ -20,31 +23,31 @@ class Flavour1CourtCaseFactory:
                 # TODO for chelmsford, issue with only one empty td at the start so trying to parse duration from courtcase ID.
 
                 try:
-                    # print(f"flav1 ccf\n row: {repr(row)}")
+                    log.debug(f"flav1 ccf\n row: {repr(row)}")
                     if len(row)>8:
                         try:
                             start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span = row[2:7]
                         except Exception as e:
-                            print(f"tried to unpack, and got exception: {e}")
+                            log.exception(f"tried to unpack, and got exception: {e}")
                             continue
                     elif len(row) == 8:
-                        # print("88888888888888")
+                        # log.debug("88888888888888")
                         start_time_span, duration_span, case_details_span_1, case_details_span_2, hearing_type_span, hearing_channel_span = row[2:8]
                         case_details_span = case_details_span_1 + case_details_span_2
                     elif len(row) == 7:
-                        # print("77777777777")
+                        # log.debug("77777777777")
                         start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span = row[2:7]
-                        # print(start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span)
+                        # log.debug(start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span)
                     elif len(row) == 6: # No rows have six?
-                        # print("66666666666")
+                        # log.debug("66666666666")
                         _, start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span = row
                     elif len(row) == 5:
-                        # print("5555555555")
+                        # log.debug("5555555555")
                         start_time_span, duration_span, case_details_span, hearing_type_span, hearing_channel_span = row
                     elif len(row) == 4:
                         start_time_span, _, case_id, case_details_span, duration_span, _, _ = row
                     else:
-                        print(f"unexpected row size, skipping this one {row}")
+                        log.warning(f"unexpected row size, skipping this one {row}")
                         continue
                 
                     # TODO some of the case details d cells have two spans in, use the re.search for v to find these cells and conditional
@@ -113,6 +116,6 @@ class Flavour1CourtCaseFactory:
                             court_cases.append(court_case)
                     
                 except (IndexError, ValueError)  as e:
-                    print(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
+                    log.warning(f"issue with unpacking {e}\n Row: {row}") # this may now be redundant due to the elif chain?     
             return court_cases
             

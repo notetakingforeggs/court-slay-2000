@@ -3,9 +3,21 @@ import os
 from court_scraper.db.models import CourtCase
 from dotenv import load_dotenv, find_dotenv
 import time
+import logging
 # load_dotenv(dotenv_path="../../.env.dev", override=True) # override means that it removes any lingering .env vars
 load_dotenv(find_dotenv())
+
+log = logging.getLogger(__name__)
+
 def get_connection():
+
+    log.debug(f"""  name = {os.getenv("DB_NAME")}\n
+                    user = {os.getenv("DB_USER")}\n
+                    host = {os.getenv("DB_HOST")}\n
+                    port = {os.getenv("DB_PORT")}"""
+    )
+
+
     return psycopg2.connect(
         dbname = os.getenv("DB_NAME"),
         user = os.getenv("DB_USER"),
@@ -30,7 +42,7 @@ def get_court_id_by_city(city):
                 return row[0] if row else None
                 
     except Exception as e:
-        print(f"issue with getting court by ID: {e}")
+        log.warning(f"issue with getting court by ID: {e}")
     finally:
          conn.close()
         
@@ -73,7 +85,7 @@ def insert_court_case(court_case:CourtCase, court_id):
                 )
         
     except psycopg2.IntegrityError as e:
-        print(f"case already exists?: {court_case}\n {e.with_traceback}")
+        log.warning(f"case already exists?: {court_case}\n {e.with_traceback}")
         pass
 
     finally:

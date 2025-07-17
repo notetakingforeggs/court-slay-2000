@@ -4,6 +4,9 @@ from court_scraper.scraper.parsers.entry_page_parser import EntryPageParser
 from court_scraper.db.db_methods import get_court_id_by_city, insert_court_case
 from court_scraper.scraper.session import BASE_URL
 from court_scraper.scraper.flavours import flavours
+import logging
+
+log = logging.GetLogger(__name__)
 
 CASE_LIST_BASE_URL = "https://www.courtserve.net/courtlists/viewcourtlistv2.php"
 
@@ -21,9 +24,11 @@ class CourtScraper:
         self.court_client = CourtClient(self.session, BASE_URL)
 
     # passing session from main where it is returned from the session/login call. BASE URL in main also?
-    def run(self): # this function orchestrates the scraping process, and should be called from main and takes the links and dates list from the county court list scrape (change this at some point maybe?)
-        # Most methods below are from this class, but i now need to move them elsewhere and call them from here.
+    def run(self): # this function orchestrates the scraping process, and is called from main and takes the links and dates list from the county court list scrape (change this at some point maybe?)
 
+        
+
+        # TODO turn the below into multiple chained/sequentially called methods rather than one method run.
     
         for i, (link, date) in enumerate (self.links_and_dates):
             if i < 1:
@@ -62,7 +67,7 @@ class CourtScraper:
             # check list not null, and that each city has a corresponding id in the db (second check could be phased out later maybe?)
             if not court_cases:
 
-                print(f"failure to get court cases for: {self.city}")
+                log.debug(f"failure to get court cases for: {self.city}")
                 continue
             for case in court_cases: # iterate through scraped court cases and add to db
                 court_id = get_court_id_by_city(case.city)

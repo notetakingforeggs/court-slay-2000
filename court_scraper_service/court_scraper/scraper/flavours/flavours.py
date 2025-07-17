@@ -19,5 +19,5 @@ def detect_Flavour(html:str) -> Flavour:
     soup = bs(html, "html.parser")
     if soup.find("meta", {"name": "Generator"}):
         return FLAVOURS["flavour1"]
-    else:
+    else: # chucking everything into flavour 2... distinguish later
         return FLAVOURS ["flavour2"]

@@ -2,6 +2,7 @@ import requests
 import os
 from bs4 import BeautifulSoup as bs
 from dotenv import load_dotenv, find_dotenv
+import logging
 
 # Load credentials from environment variables (may have to change depending on where this is being called from, setting up for nb)
 
@@ -26,6 +27,8 @@ login_payload = {
     "login": "Sign In"
     }
 
+log = logging.getLogger(__name__)
+
 
 def login():
     # url = BASE_URL+"/"
@@ -35,7 +38,7 @@ def login():
     """Logs into the court website and returns an authenticated session."""
     session = requests.session()
     session.headers.update(HEADERS)
-    print(f"username: {USERNAME}, password: {PASSWORD}")
+    log.debug(f"username: {USERNAME}, password: {PASSWORD}")
     
     try:
         login_response = session.post(url, data=login_payload, allow_redirects=False)
@@ -46,19 +49,19 @@ def login():
             redirect_url = login_response.headers.get("Location", "/")
             home_response = session.get("https://courtserve.net" + redirect_url)
         else:
-            print("Did not recieve a redirect, already logged in?") # TODO this needs clarification
+            log.warning("Did not recieve a redirect, already logged in?") # TODO this needs clarification
             home_response = session.get("https://courtserve.net/")
         
         soup = bs(home_response.text, "html.parser")
 
         if(not is_logged_in(soup)):
-            print(f"Login probs failed ")
+            log.critical(f"Login probs failed ")
             return None
         else:
-            print("probs logged in")
+            log.debug("no sign-in form on current page, suggesting you are logged in - returning session")
             return session 
     except requests.RequestException as e:
-        print(f"Request failed: {e}")
+        log.critical(f"Request failed: {e}")
         return None
     
 def is_logged_in(soup : bs) -> bool:

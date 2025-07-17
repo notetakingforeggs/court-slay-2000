@@ -1,11 +1,11 @@
 ## TODO
 
  
-- ~make parent git to host both spring project and scraper in one repo, currently some weird thing where one is inside the other but they are still pushing separately~ 
+- ~~make parent git to host both spring project and scraper in one repo, currently some weird thing where one is inside the other but they are still pushing separately~ ~
 
-- dockerise python part
+- ~~dockerise python part~~
 
-- build out backend endpoints/set it up as an API
+- ~~build out backend endpoints/set it up as an API~~
 - something about city/location
 - tests
 - type hints/return values and documentation comments
@@ -88,12 +88,28 @@ __ There are approx 37 courts I know are failing__
 
 
 ## now doing some dev ops stuff? 
-- dockerise scraper 
-- hook up scraper to psql db via compose?
-- crontab automate scraping daily at 7
-- just run it on my laptop for now
-- host on either old thinkpad (noisy?) or vps (oracle)
+- ~~dockerise scraper~~
+- ~~hook up scraper to psql db via compose?~~
+- ~~crontab automate scraping daily at 7~~
+- ~~just run it on my laptop for now - change of plan, mac mini~~
+- ~~host on either old thinkpad (noisy?) or vps (oracle)~~
 
 so then i have this scraper running and populating this database, with data that i will anonymise. GDPR etc.. maybe purge it every three days to avoid storing personal data until i have the encrpytion and hashing implemented. 
 
 then i set up the backend rest endpoints to allow searching for cases by name of defendant/claimant... also by type?
+print
+## currently on Logging 
+- ~~implement slf4J in spring backend~~
+- implement logging across pythong scraper
+- set up tmux panels with tails of logs for prod
+- set up file based logging for prod, with automated removal
+- re up prod with new logging to hopefully see failure points
+
+# python refactor
+- split up run method in court scraper file
+- more testing always
+- work on batch processing for db
+- work on parallelizing scraping
+- implement better global exception handling
+- deal with connectivity issues better, checkpoints for graceful failures.
+- typing in python, better docstrings.
