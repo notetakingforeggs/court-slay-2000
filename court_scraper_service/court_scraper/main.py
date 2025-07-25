@@ -8,7 +8,7 @@ def main():
 
     # init logging
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="%(asctime)s | %(levelname)s | scraper | %(message)s"
     )
 

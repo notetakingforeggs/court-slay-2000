@@ -1,4 +1,5 @@
 import psycopg2
+
 import os
 from court_scraper.db.models import CourtCase
 from dotenv import load_dotenv, find_dotenv
@@ -84,9 +85,11 @@ def insert_court_case(court_case:CourtCase, court_id):
                     )
                 )
         
+    # expected frequently as cases scraped daily, but often a case is up for multiple days
     except psycopg2.IntegrityError as e:
-        log.debug(f"case already exists?: {court_case}\n {e.with_traceback}")
-        pass
-
+        log.debug(f"case already exists: {court_case.case_id}\n")
+    # likely to indicate an issue with parsing the rows of court case into the correct columns. Possible also just anomolously long values.
+    except psycopg2.errors.StringDataRightTruncation as e:
+        log.warning(f"value length exceeds column capacity: {court_case.__dict__}")
     finally:
         conn.close()
