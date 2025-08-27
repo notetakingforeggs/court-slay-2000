@@ -32,9 +32,9 @@ public class NotifierJob {
         log.info("NotifierJob initialized");
     }
         //  run at 730 every morning
-        @Scheduled(cron =  "0 30 7 * * *")
+        // @Scheduled(cron =  "0 30 7 * * *")
 //    @Scheduled(cron =  "0 * * * * *")
-//    @Scheduled(fixedRate = 50000) // every 10 seconds
+    @Scheduled(fixedRate = 50000) // every 10 seconds
     public void run(){
         log.info("Scheduler running: checking suscriptions");
         // iterating thru all subscriptions
